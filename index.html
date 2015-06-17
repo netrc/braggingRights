@@ -54,14 +54,17 @@ What North American city has won the most major sports championships?
 <p>
 <a href="https://docs.google.com/spreadsheets/d/1FjlM88FTZbc3c7-bYJxsmqd0eVvG5vVmC4QObXYwrB0/pubhtml"> Current data </a>
 
-<div id="brCityPopup" title="Bragging Rights"> <div id="cbrGrid" style="width:500;height:450px"></div> </div>
+<div id="brCityPopup" title="Bragging Rights">
+  <div id="cbrGrid" style="width:500px"></div> 
+</div>
+
+
 
 <script type="text/javascript">
 	var cbrGrid;
 
 	$(document).ready(function() {
-		$('#brCityPopup').dialog({ autoOpen: false });
-		$('#brEditorPopup').dialog({ autoOpen: false });
+		$('#brCityPopup').dialog({ autoOpen: false, width: "auto", autoResize: true });
 
 	  var brGrid = new dhtmlXGridObject('brGrid');
 	  brGrid.setImagePath("dhtmlx/dhtmlxGrid/codebase/imgs/");
