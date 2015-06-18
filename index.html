@@ -9,6 +9,10 @@
 <script src="dhtmlx/dhtmlxGrid/codebase/dhtmlxgrid.js"></script>
 <script src="dhtmlx/dhtmlxGrid/codebase/dhtmlxgridcell.js"></script>
 
+  <script src="http://d3js.org/d3.v3.min.js"></script>
+  <script src="http://d3js.org/topojson.v1.min.js"></script>
+  <script src="http://datamaps.github.io/scripts/datamaps.usa.min.js?v=1"></script>
+
 <script src="tabletop.js"></script>
 
 <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css"/>
@@ -52,12 +56,17 @@ What North American city has won the most major sports championships?
 <div id="brGrid" style="width:650;height:450px"></div>
 </center>
 <p>
-<a href="https://docs.google.com/spreadsheets/d/1FjlM88FTZbc3c7-bYJxsmqd0eVvG5vVmC4QObXYwrB0/pubhtml"> Current data </a>
 
 <div id="brCityPopup" title="Bragging Rights">
   <div id="cbrGrid" style="width:500px"></div> 
 </div>
 
+<div id="map" style="position: relative; width: 80%; max-height: 450px;"></div>
+
+<br>
+<a href="https://docs.google.com/spreadsheets/d/1FjlM88FTZbc3c7-bYJxsmqd0eVvG5vVmC4QObXYwrB0/pubhtml"> Current data </a>
+<br>
+<br>
 
 
 <script type="text/javascript">
@@ -89,13 +98,27 @@ What North American city has won the most major sports championships?
         citySelect(i, ind, cbrGrid);
     });
 
+    var map = new Datamap({
+      element: document.getElementById('map'),
+      scope: 'usa',
+      projection: 'mercator',
+      height: 500,
+      fills: {
+          defaultFill: '#60809a',
+          eq0: '#222',
+          lt10: '#955',
+          lt25: '#c66',
+          gt25: '#f00'
+      }
+    });
+
     // from Google doc, see 'publish' menu item
     var BrKey = "1FjlM88FTZbc3c7-bYJxsmqd0eVvG5vVmC4QObXYwrB0";
     // https://github.com/jsoma/tabletop
     var t = Tabletop.init( { key: BrKey, simpleSheet: true,
                    callback: function(data, tabletop) { 
                       //console.log(data);
-                      ttCallback(tabletop, brGrid);
+                      ttCallback(tabletop, brGrid, map);
                     } 
                   } );
 	});
@@ -157,7 +180,7 @@ What North American city has won the most major sports championships?
 	  }
   }
 
-  function ttCallback( tabletop, brGrid ) {
+  function ttCallback( tabletop, brGrid, map ) {
     // get city data
     var BrCities = tabletop.sheets('cities').elements;
     var clist = {};		// just list of cities
@@ -188,9 +211,36 @@ What North American city has won the most major sports championships?
 		  da.push( [ c, getT("all",c,"wins"), getT("all",c,"losses"), getT("mlb",c,"wins"), getT("mlb",c,"losses"), getT("nfl",c,"wins"), getT("nfl",c,"losses"), getT("nba",c,"wins"), getT("nba",c,"losses"), getT("nhl",c,"wins"), getT("nhl",c,"losses") ] );
 	  };
 
-	  // publish
+	  // show the Grid
 	  brGrid.parse(da,"jsarray"); 
 	  brGrid.sortRows(1,"int","des");
+
+
+    // the BubbleMap
+    var BrMap = tabletop.sheets('geo').elements;
+    var bubbleArray = [];
+    BrMap.map(function(c) {
+      //console.log("map: " + c.city + " - " + c.lat + ", " + c.lon + " w/l: " + getT("all",c.city,"wins") + "/" + getT("all",c.city,"losses"));
+      var w =  getT("all",c.city,"wins");
+      var l =  getT("all",c.city,"losses");
+      bubbleArray.push( {
+        name: c.city + ": " + w + " wins, " + l + " losses",
+        latitude: c.lat,
+        longitude: c.lon,
+        radius: 7, 
+        fillKey: w==0 ? 'eq0' : ((w<10) ? 'lt10' : ((w<25) ? 'lt25' : 'gt25'))
+      } );
+    });
+
+    map.bubbles( bubbleArray, {
+     popupTemplate: function(geo, data) {
+         return "<div class='hoverinfo'>" + data.name + "</div>";
+     }
+    //var testBA = [
+     // {name: 'Detroit: 18 wins, 22 losses', latitude: 42.35, longitude: -83.1, radius: 7, fillKey: 'lt25'},
+      //{name: 'New York: 50 wins, 47 losses', latitude: 40.70, longitude: -73.98, radius: 7, fillKey: 'gt25'}
+     //];
+   });
 	}
 
   function citySelect ( id, ind, grid ) {
