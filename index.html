@@ -158,16 +158,9 @@ What North American city has won the most major sports championships?
   }
 
   function ttCallback( tabletop, brGrid ) {
+    // get city data
     var BrCities = tabletop.sheets('cities').elements;
-    var BrMLB = tabletop.sheets('mlb').elements;
-    var BrNFL = tabletop.sheets('nfl').elements;
-    var BrNBA = tabletop.sheets('nba').elements;
-    var BrNHL = tabletop.sheets('nhl').elements;
-
-    // get Cities/Teams data
-    var clist = new Object;		// just list of cities
-  	tN["all"] = qall; 
-
+    var clist = {};		// just list of cities
     BrCities.map(function(x) {
       ct[x.team] = x.city;
     });
@@ -177,6 +170,13 @@ What North American city has won the most major sports championships?
 	  for (var e in clist) {
 	  	carray.push(e);
 	  }
+
+    // get Cities/Teams data
+  	tN["all"] = qall; 
+    var BrMLB = tabletop.sheets('mlb').elements;
+    var BrNFL = tabletop.sheets('nfl').elements;
+    var BrNBA = tabletop.sheets('nba').elements;
+    var BrNHL = tabletop.sheets('nhl').elements;
 
 	  getSport ( "mlb", BrMLB );
 	  getSport ( "nfl", BrNFL );
