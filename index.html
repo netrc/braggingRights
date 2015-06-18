@@ -61,10 +61,19 @@ What North American city has won the most major sports championships?
 
 
 <script type="text/javascript">
-	var cbrGrid;
 
 	$(document).ready(function() {
 		$('#brCityPopup').dialog({ autoOpen: false, width: "auto", autoResize: true });
+
+	  var cbrGrid = new dhtmlXGridObject('cbrGrid');
+	  cbrGrid.setImagePath("dhtmlx/dhtmlxGrid/codebase/imgs/");
+	  cbrGrid.setHeader("Year,Sport,Result,Winner,Loser");
+	  cbrGrid.setInitWidths("50,50,50,120,120");
+	  cbrGrid.setColAlign("center,center,center,center,center");
+	  cbrGrid.setColTypes("ro,ro,ro,ro,ro");
+	  cbrGrid.setColSorting("str,str,str,str,str");
+	  cbrGrid.init();
+	  cbrGrid.setSkin("dhx_skyblue");
 
 	  var brGrid = new dhtmlXGridObject('brGrid');
 	  brGrid.setImagePath("dhtmlx/dhtmlxGrid/codebase/imgs/");
@@ -76,17 +85,9 @@ What North American city has won the most major sports championships?
 	  brGrid.setColSorting("str,int,int,int,int,int,int,int,int,int,int");
 	  brGrid.init();
 	  brGrid.setSkin("dhx_skyblue");
-	  brGrid.attachEvent("onRowSelect", citySelect);
-
-	  cbrGrid = new dhtmlXGridObject('cbrGrid');
-	  cbrGrid.setImagePath("dhtmlx/dhtmlxGrid/codebase/imgs/");
-	  cbrGrid.setHeader("Year,Sport,Result,Winner,Loser");
-	  cbrGrid.setInitWidths("50,50,50,120,120");
-	  cbrGrid.setColAlign("center,center,center,center,center");
-	  cbrGrid.setColTypes("ro,ro,ro,ro,ro");
-	  cbrGrid.setColSorting("str,str,str,str,str");
-	  cbrGrid.init();
-	  cbrGrid.setSkin("dhx_skyblue");
+	  brGrid.attachEvent("onRowSelect", function brGridRowSelectEvent(i,ind){
+        citySelect(i, ind, cbrGrid);
+    });
 
     var BrKey = "1FjlM88FTZbc3c7-bYJxsmqd0eVvG5vVmC4QObXYwrB0";
     // https://github.com/jsoma/tabletop
@@ -191,12 +192,12 @@ What North American city has won the most major sports championships?
 	  brGrid.sortRows(1,"int","des");
 	}
 
-  function citySelect ( id, ind ) {
+  function citySelect ( id, ind, grid ) {
 	  c = carray[id-1];
+	  grid.clearAll();
+	  grid.parse(qall[c].a,"jsarray"); 
 	  d=$('#brCityPopup');
 	  d.dialog( "option", "title", "Bragging Rights: " + c );
-	  cbrGrid.clearAll();
-	  cbrGrid.parse(qall[c].a,"jsarray"); 
 	  d.dialog('open');
   }
 </script>	
