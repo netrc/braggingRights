@@ -84,6 +84,9 @@ var CityData = function () {
 };
 
 
+//
+// mocha tests
+
 if (typeof require != "undefined") {
 var assert = require("assert")
 describe('CityData', function(){
@@ -152,6 +155,18 @@ describe('CityData', function(){
       assert.equal(cd.sportTotals('Detroit').losses('nhl'),1);
       assert.equal(cd.sportTotals('Detroit').wins('all'),3);
       assert.equal(cd.sportTotals('Detroit').losses('all'),2);
+    })
+  })
+  describe('sportTotalsArray', function(){
+    it('3 sports works', function(){
+      var cd = new CityData();
+      cd.addTeamCity( {team:'Tigers', city:'Detroit'} );
+      cd.sportTotals('Detroit').addWin('mlb');
+      cd.sportTotals('Detroit').addWin('mlb');
+      cd.sportTotals('Detroit').addLoss('mlb');
+      cd.sportTotals('Detroit').addWin('nfl');
+      cd.sportTotals('Detroit').addLoss('nhl');
+      assert.deepEqual(cd.sportTotalsArray('Detroit'),['Detroit',3,2,2,1,1,0,0,0,0,1]);
     })
   })
 })

@@ -2,15 +2,20 @@
 
 Tracking North American cities cumulative sports championships...
 
+An experiment with 
+* Google Spreadsheets 
+* dhtmlx Grid
+* D3 and DataMaps
 
 
 # ToDo
-* get rid of globals
-* add other tests
+* select/show bubble <--> show/select data grid row
 * better background
 
 
 # Done
+* get rid of globals
+* add other tests
 * split city data mgmt to braggingRights.js
 * added mocha test
 * Add US map
