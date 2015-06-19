@@ -133,6 +133,7 @@ What North American city has won the most major sports championships?
 		br.forEach(function(x) { // add up each city count
 		  var t = x.winner; 
 		  var c = cd.teamToCity(t);
+cd.sportTotals(c).addWin(sport, x.year, x.winner, x.loser);
 		  if (! q.hasOwnProperty(c)) {
 			  q[c] = new Object ; q[c].wins=0; q[c].losses=0; 
 			  q[c].text = "";
@@ -144,9 +145,9 @@ What North American city has won the most major sports championships?
 		  } 
 		  qall[c].wins += 1;
 		  qall[c].a.push( [ x.year, sport, "Won", x.winner, x.loser ] );
-    
 		  t = x.loser; 
 		  c = cd.teamToCity(t);
+cd.sportTotals(c).addLoss(sport, x.year, x.winner, x.loser);
 		  if (!q.hasOwnProperty(c)) { 
 			  q[c] = new Object ; q[c].wins=0; q[c].losses=0; 
 			  q[c].text = "";
@@ -233,7 +234,8 @@ What North American city has won the most major sports championships?
   function citySelect ( id, ind, popupgrid, cd) {
     var c = cd.asArray()[id-1];
 	  popupgrid.clearAll();
-	  popupgrid.parse(qall[c].a,"jsarray"); 
+	  //popupgrid.parse(qall[c].a,"jsarray"); 
+	  popupgrid.parse(cd.sportTotals(c).wlArray(),"jsarray"); 
 	  d=$('#brCityPopup');
 	  d.dialog( "option", "title", "Bragging Rights: " + c );
 	  d.dialog('open');
