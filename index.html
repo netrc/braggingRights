@@ -122,43 +122,14 @@ What North American city has won the most major sports championships?
                   } );
 	}); // end of ready
 
-  // globals...
-  var tN = new Object; // sport per city, wins/losses
-
   function getSport ( sport, br, cd ) {
-	  var q = new Object;   // per sport
-	  tN[sport] = q;
-
 		br.forEach(function(x) { // add up each city count
-		  var t = x.winner; 
-		  var c = cd.teamToCity(t);
+		  var c = cd.teamToCity(x.winner);
       cd.sportTotals(c).addWin(sport, x.year, x.winner, x.loser);
-		  if (! q.hasOwnProperty(c)) {
-			  q[c] = new Object ; q[c].wins=0; q[c].losses=0; 
-			  q[c].text = "";
-		  } 
-		  q[c].wins += 1; q[c].text+=x.year+": "+x.winner+" Won ";
 
-		  t = x.loser; 
-		  c = cd.teamToCity(t);
+		  c = cd.teamToCity(x.loser);
       cd.sportTotals(c).addLoss(sport, x.year, x.winner, x.loser);
-		  if (!q.hasOwnProperty(c)) { 
-			  q[c] = new Object ; q[c].wins=0; q[c].losses=0; 
-			  q[c].text = "";
-		  } 
-		  q[c].losses += 1; q[c].text+=x.year+": "+x.loser+" Lost "; 
 	  });
-  }
-
-  function getT( sport, city, s ) {
-console.log("getT ", sport, city, s);
-	  var y = tN[sport];
-	  if (y.hasOwnProperty(city)) { 
-		  var z = y[city];
-		  return z[s];
-	  } else {
-		  return 0;
-	  }
   }
 
   function ttCallback( tabletop, brgrid, map, cbrgrid ) {
@@ -167,12 +138,13 @@ console.log("getT ", sport, city, s);
     var cityData = new CityData();
     BrCities.map(cityData.addTeamCity);
 
-    // get Cities/Teams data
+    // get championship matchups/win/loser data
     var BrMLB = tabletop.sheets('mlb').elements;
     var BrNFL = tabletop.sheets('nfl').elements;
     var BrNBA = tabletop.sheets('nba').elements;
     var BrNHL = tabletop.sheets('nhl').elements;
 
+    // associate win/loss per city, per sport
 	  getSport ( "mlb", BrMLB, cityData );
 	  getSport ( "nfl", BrNFL, cityData );
 	  getSport ( "nba", BrNBA, cityData );
@@ -180,7 +152,7 @@ console.log("getT ", sport, city, s);
 
 	  var da = [];
 	  for (var c in cityData.asList()) { 
-		  da.push( [ c, cityData.sportTotals(c).wins('all'), cityData.sportTotals(c).losses('all'), getT("mlb",c,"wins"), getT("mlb",c,"losses"), getT("nfl",c,"wins"), getT("nfl",c,"losses"), getT("nba",c,"wins"), getT("nba",c,"losses"), getT("nhl",c,"wins"), getT("nhl",c,"losses") ] );
+		  da.push( cityData.sportTotalsArray(c) );
 	  };
 
 	  // show the Grid
@@ -195,7 +167,6 @@ console.log("getT ", sport, city, s);
     var BrMap = tabletop.sheets('geo').elements;
     var bubbleArray = [];
     BrMap.map(function(c) {
-      ////console.log("map: " + c.city + " - " + c.lat + ", " + c.lon + " w/l: " + getT("all",c.city,"wins") + "/" + getT("all",c.city,"losses"));
       //console.log("map: " + c.city + " - " + c.lat + ", " + c.lon + " w/l: ");
       var w =  cityData.sportTotals(c.city).wins('all');
       var l =  cityData.sportTotals(c.city).losses('all');

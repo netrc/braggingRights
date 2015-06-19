@@ -70,6 +70,17 @@ var CityData = function () {
         return _sportTotals[c];
     };
 
+    this.sportTotalsArray = function ( c ) {
+        var a = [];
+        a.push(c);
+        a.push( _sportTotals[c].wins('all'), _sportTotals[c].losses('all') );
+        a.push( _sportTotals[c].wins('mlb'), _sportTotals[c].losses('mlb') );
+        a.push( _sportTotals[c].wins('nfl'), _sportTotals[c].losses('nfl') );
+        a.push( _sportTotals[c].wins('nba'), _sportTotals[c].losses('nba') );
+        a.push( _sportTotals[c].wins('nhl'), _sportTotals[c].losses('nhl') );
+
+        return a;
+    };
 };
 
 
