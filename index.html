@@ -124,7 +124,6 @@ What North American city has won the most major sports championships?
 
   // globals...
   var tN = new Object; // sport per city, wins/losses
-  var qall = new Object; // convenience for all sports per city
 
   function getSport ( sport, br, cd ) {
 	  var q = new Object;   // per sport
@@ -133,36 +132,26 @@ What North American city has won the most major sports championships?
 		br.forEach(function(x) { // add up each city count
 		  var t = x.winner; 
 		  var c = cd.teamToCity(t);
-cd.sportTotals(c).addWin(sport, x.year, x.winner, x.loser);
+      cd.sportTotals(c).addWin(sport, x.year, x.winner, x.loser);
 		  if (! q.hasOwnProperty(c)) {
 			  q[c] = new Object ; q[c].wins=0; q[c].losses=0; 
 			  q[c].text = "";
 		  } 
 		  q[c].wins += 1; q[c].text+=x.year+": "+x.winner+" Won ";
-		  if (! qall.hasOwnProperty(c)) { 
-			  qall[c] = new Object ; qall[c].wins=0; qall[c].losses=0; 
-			  qall[c].a = [];
-		  } 
-		  qall[c].wins += 1;
-		  qall[c].a.push( [ x.year, sport, "Won", x.winner, x.loser ] );
+
 		  t = x.loser; 
 		  c = cd.teamToCity(t);
-cd.sportTotals(c).addLoss(sport, x.year, x.winner, x.loser);
+      cd.sportTotals(c).addLoss(sport, x.year, x.winner, x.loser);
 		  if (!q.hasOwnProperty(c)) { 
 			  q[c] = new Object ; q[c].wins=0; q[c].losses=0; 
 			  q[c].text = "";
 		  } 
 		  q[c].losses += 1; q[c].text+=x.year+": "+x.loser+" Lost "; 
-		  if (!qall.hasOwnProperty(c)) { 
-			  qall[c] = new Object ; qall[c].wins=0; qall[c].losses=0; 
-			  qall[c].a = [];
-		  }
-		  qall[c].losses += 1;
-		  qall[c].a.push( [ x.year, sport, "Lost", x.winner, x.loser ] );
 	  });
   }
 
   function getT( sport, city, s ) {
+console.log("getT ", sport, city, s);
 	  var y = tN[sport];
 	  if (y.hasOwnProperty(city)) { 
 		  var z = y[city];
@@ -179,7 +168,6 @@ cd.sportTotals(c).addLoss(sport, x.year, x.winner, x.loser);
     BrCities.map(cityData.addTeamCity);
 
     // get Cities/Teams data
-  	tN["all"] = qall; 
     var BrMLB = tabletop.sheets('mlb').elements;
     var BrNFL = tabletop.sheets('nfl').elements;
     var BrNBA = tabletop.sheets('nba').elements;
@@ -192,7 +180,7 @@ cd.sportTotals(c).addLoss(sport, x.year, x.winner, x.loser);
 
 	  var da = [];
 	  for (var c in cityData.asList()) { 
-		  da.push( [ c, getT("all",c,"wins"), getT("all",c,"losses"), getT("mlb",c,"wins"), getT("mlb",c,"losses"), getT("nfl",c,"wins"), getT("nfl",c,"losses"), getT("nba",c,"wins"), getT("nba",c,"losses"), getT("nhl",c,"wins"), getT("nhl",c,"losses") ] );
+		  da.push( [ c, cityData.sportTotals(c).wins('all'), cityData.sportTotals(c).losses('all'), getT("mlb",c,"wins"), getT("mlb",c,"losses"), getT("nfl",c,"wins"), getT("nfl",c,"losses"), getT("nba",c,"wins"), getT("nba",c,"losses"), getT("nhl",c,"wins"), getT("nhl",c,"losses") ] );
 	  };
 
 	  // show the Grid
@@ -207,14 +195,14 @@ cd.sportTotals(c).addLoss(sport, x.year, x.winner, x.loser);
     var BrMap = tabletop.sheets('geo').elements;
     var bubbleArray = [];
     BrMap.map(function(c) {
-      //console.log("map: " + c.city + " - " + c.lat + ", " + c.lon + " w/l: " + getT("all",c.city,"wins") + "/" + getT("all",c.city,"losses"));
-      var w =  getT("all",c.city,"wins");
-      var l =  getT("all",c.city,"losses");
+      ////console.log("map: " + c.city + " - " + c.lat + ", " + c.lon + " w/l: " + getT("all",c.city,"wins") + "/" + getT("all",c.city,"losses"));
+      //console.log("map: " + c.city + " - " + c.lat + ", " + c.lon + " w/l: ");
+      var w =  cityData.sportTotals(c.city).wins('all');
+      var l =  cityData.sportTotals(c.city).losses('all');
       bubbleArray.push( {
         name: c.city + ": " + w + " wins, " + l + " losses",
         latitude: c.lat,
         longitude: c.lon,
-        radius: 7, 
         radius: (w<10) ? 5: ((w<25) ? 7 : 11),
         fillKey: w==0 ? 'eq0' : ((w<10) ? 'lt10' : ((w<25) ? 'lt25' : 'gt25'))
       } );
@@ -234,7 +222,6 @@ cd.sportTotals(c).addLoss(sport, x.year, x.winner, x.loser);
   function citySelect ( id, ind, popupgrid, cd) {
     var c = cd.asArray()[id-1];
 	  popupgrid.clearAll();
-	  //popupgrid.parse(qall[c].a,"jsarray"); 
 	  popupgrid.parse(cd.sportTotals(c).wlArray(),"jsarray"); 
 	  d=$('#brCityPopup');
 	  d.dialog( "option", "title", "Bragging Rights: " + c );
