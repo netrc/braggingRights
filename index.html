@@ -9,11 +9,13 @@
 <script src="dhtmlx/dhtmlxGrid/codebase/dhtmlxgrid.js"></script>
 <script src="dhtmlx/dhtmlxGrid/codebase/dhtmlxgridcell.js"></script>
 
-  <script src="http://d3js.org/d3.v3.min.js"></script>
-  <script src="http://d3js.org/topojson.v1.min.js"></script>
-  <script src="http://datamaps.github.io/scripts/datamaps.usa.min.js?v=1"></script>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="http://d3js.org/topojson.v1.min.js"></script>
+<script src="http://datamaps.github.io/scripts/datamaps.usa.min.js?v=1"></script>
 
 <script src="tabletop.js"></script>
+
+<script src="braggingRights.js"></script>
 
 <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css"/>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
@@ -94,9 +96,6 @@ What North American city has won the most major sports championships?
 	  brGrid.setColSorting("str,int,int,int,int,int,int,int,int,int,int");
 	  brGrid.init();
 	  brGrid.setSkin("dhx_skyblue");
-	  brGrid.attachEvent("onRowSelect", function brGridRowSelectEvent(i,ind){
-        citySelect(i, ind, cbrGrid);
-    });
 
     var map = new Datamap({
       element: document.getElementById('map'),
@@ -118,27 +117,22 @@ What North American city has won the most major sports championships?
     var t = Tabletop.init( { key: BrKey, simpleSheet: true,
                    callback: function(data, tabletop) { 
                       //console.log(data);
-                      ttCallback(tabletop, brGrid, map);
+                      ttCallback(tabletop, brGrid, map, cbrGrid);
                     } 
                   } );
-	});
+	}); // end of ready
 
   // globals...
   var tN = new Object; // sport per city, wins/losses
   var qall = new Object; // convenience for all sports per city
-  var ct = new Object;		// props map teams to cities
-	var carray = new Array;		// just list of cities
 
-  function getSport ( sport, br ) {
+  function getSport ( sport, br, cd ) {
 	  var q = new Object;   // per sport
 	  tN[sport] = q;
 
 		br.forEach(function(x) { // add up each city count
-		  var c = x.winner; 
-		  if (! ct.hasOwnProperty(c)) {
-        console.log("ct doesn't have city ", c);
-      }
-		  c = ct[c];
+		  var t = x.winner; 
+		  var c = cd.teamToCity(t);
 		  if (! q.hasOwnProperty(c)) {
 			  q[c] = new Object ; q[c].wins=0; q[c].losses=0; 
 			  q[c].text = "";
@@ -151,11 +145,8 @@ What North American city has won the most major sports championships?
 		  qall[c].wins += 1;
 		  qall[c].a.push( [ x.year, sport, "Won", x.winner, x.loser ] );
     
-		  c = x.loser; 
-		  if (! ct.hasOwnProperty(c)) {
-        console.log("ct doesn't have city ", c);
-      }
-		  c = ct[c];
+		  t = x.loser; 
+		  c = cd.teamToCity(t);
 		  if (!q.hasOwnProperty(c)) { 
 			  q[c] = new Object ; q[c].wins=0; q[c].losses=0; 
 			  q[c].text = "";
@@ -180,19 +171,11 @@ What North American city has won the most major sports championships?
 	  }
   }
 
-  function ttCallback( tabletop, brGrid, map ) {
+  function ttCallback( tabletop, brgrid, map, cbrgrid ) {
     // get city data
     var BrCities = tabletop.sheets('cities').elements;
-    var clist = {};		// just list of cities
-    BrCities.map(function(x) {
-      ct[x.team] = x.city;
-    });
-    for (var e in ct) {
-      clist[ct[e]]=1;
-    }
-	  for (var e in clist) {
-	  	carray.push(e);
-	  }
+    var cityData = new CityData();
+    BrCities.map(cityData.addTeamCity);
 
     // get Cities/Teams data
   	tN["all"] = qall; 
@@ -201,19 +184,22 @@ What North American city has won the most major sports championships?
     var BrNBA = tabletop.sheets('nba').elements;
     var BrNHL = tabletop.sheets('nhl').elements;
 
-	  getSport ( "mlb", BrMLB );
-	  getSport ( "nfl", BrNFL );
-	  getSport ( "nba", BrNBA );
-	  getSport ( "nhl", BrNHL );
+	  getSport ( "mlb", BrMLB, cityData );
+	  getSport ( "nfl", BrNFL, cityData );
+	  getSport ( "nba", BrNBA, cityData );
+	  getSport ( "nhl", BrNHL, cityData );
 
 	  var da = [];
-	  for (var c in clist) { 
+	  for (var c in cityData.asList()) { 
 		  da.push( [ c, getT("all",c,"wins"), getT("all",c,"losses"), getT("mlb",c,"wins"), getT("mlb",c,"losses"), getT("nfl",c,"wins"), getT("nfl",c,"losses"), getT("nba",c,"wins"), getT("nba",c,"losses"), getT("nhl",c,"wins"), getT("nhl",c,"losses") ] );
 	  };
 
 	  // show the Grid
-	  brGrid.parse(da,"jsarray"); 
-	  brGrid.sortRows(1,"int","des");
+	  brgrid.parse(da,"jsarray"); 
+	  brgrid.sortRows(1,"int","des");
+	  brgrid.attachEvent("onRowSelect", function brGridRowSelectEvent(i,ind){
+        citySelect(i, ind, cbrgrid, cityData);
+    });
 
 
     // the BubbleMap
@@ -228,6 +214,7 @@ What North American city has won the most major sports championships?
         latitude: c.lat,
         longitude: c.lon,
         radius: 7, 
+        radius: (w<10) ? 5: ((w<25) ? 7 : 11),
         fillKey: w==0 ? 'eq0' : ((w<10) ? 'lt10' : ((w<25) ? 'lt25' : 'gt25'))
       } );
     });
@@ -243,10 +230,10 @@ What North American city has won the most major sports championships?
    });
 	}
 
-  function citySelect ( id, ind, grid ) {
-	  c = carray[id-1];
-	  grid.clearAll();
-	  grid.parse(qall[c].a,"jsarray"); 
+  function citySelect ( id, ind, popupgrid, cd) {
+    var c = cd.asArray()[id-1];
+	  popupgrid.clearAll();
+	  popupgrid.parse(qall[c].a,"jsarray"); 
 	  d=$('#brCityPopup');
 	  d.dialog( "option", "title", "Bragging Rights: " + c );
 	  d.dialog('open');
