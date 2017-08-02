@@ -2,12 +2,14 @@
 
 Tracking North American cities cumulative sports championships...
 
-See http://www.netrc.com/braggingRights
+See http://netrc.github.io/braggingRights
 
 An experiment with 
 * Google Spreadsheets 
 * dhtmlx Grid
 * D3 and DataMaps
+
+Trackingn - see https://waffle.io/netrc/braggingRights
 
 # ToDo
 * select/show bubble <--> show/select data grid row
