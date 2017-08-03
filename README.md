@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/netrc/braggingRights.png?label=ready&title=Ready)](https://waffle.io/netrc/braggingRights?utm_source=badge)
 
 
 Tracking North American cities cumulative sports championships...
