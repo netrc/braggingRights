@@ -1,7 +1,5 @@
-[![Stories in Ready](https://badge.waffle.io/netrc/braggingRights.png?label=ready&title=Ready)](https://waffle.io/netrc/braggingRights?utm_source=badge)
 
-
-Tracking North American cities cumulative sports championships...
+## *Tracking North American cities cumulative sports championships...*
 
 See http://netrc.github.io/braggingRights
 
@@ -10,7 +8,7 @@ An experiment with
 * dhtmlx Grid
 * D3 and DataMaps
 
-Trackingn - see https://waffle.io/netrc/braggingRights
+Tracking - [![Stories in Ready](https://badge.waffle.io/netrc/braggingRights.png?label=ready&title=Ready)](https://waffle.io/netrc/braggingRights?utm_source=badge)
 
 # ToDo
 * select/show bubble <--> show/select data grid row
