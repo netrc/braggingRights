@@ -4,7 +4,7 @@
 See http://netrc.github.io/braggingRights
 
 An experiment with 
-* Google Spreadsheets 
+* Google Spreadsheets - data at https://docs.google.com/spreadsheets/d/1FjlM88FTZbc3c7-bYJxsmqd0eVvG5vVmC4QObXYwrB0/edit#gid=0
 * dhtmlx Grid
 * D3 and DataMaps
 
