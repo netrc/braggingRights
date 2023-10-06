@@ -32,16 +32,17 @@
 Which North American city has won the most major sports championships?
 </p>
 
-<div id="brGrid"></div>
-
+<div id="map" style="position: relative; width: 65%; max-height: 550px;"></div>
 <br>
-<div id="map" style="position: relative; width: 80%; max-height: 450px;"></div>
+
+<div id="brGrid"></div>
 
 <script type='module'>
 
   import { Grid, html } from "https://unpkg.com/gridjs?module";
 
   import getCitiesWinsLosses from './braggingRights.js'
+  import brCities from './data/brCities.js'
 
   const mc = getCitiesWinsLosses()
   console.dir(mc)
@@ -93,9 +94,9 @@ Which North American city has won the most major sports championships?
       console.log(`popup list of stats for ${args[3]['_cells'][0].data} ${args[2].id}`)
     }
   }
-  
   brGrid.on('cellClick', (...args) => cellPopup(args))
 
+  // the map
   var map = new Datamap({
     element: document.getElementById('map'),
     scope: 'usa',
@@ -108,7 +109,26 @@ Which North American city has won the most major sports championships?
         lt25: '#c66',
         gt25: '#f00'
     }
-  });
+  })
+
+  const bubbleArray = Object.keys(brCities).map( k => {
+    const w =  N(mc,k,'cWins')
+    const l =  N(mc,k,'cLosses')
+    return {
+      name: `${k}: ${w} wins, ${l} losses`,
+      latitude: brCities[k].lat,
+      longitude: brCities[k].lon,
+      radius: (w<10) ? 5: ((w<25) ? 7 : 11),
+      fillKey: w==0 ? 'eq0' : ((w<10) ? 'lt10' : ((w<25) ? 'lt25' : 'gt25'))
+    }
+  })
+  console.dir(bubbleArray)
+
+  map.bubbles( bubbleArray, {
+   popupTemplate: function(geo, data) {
+       return "<div class='hoverinfo'>" + data.name + "</div>";
+   }
+  })
 
 </script>
 </body>
