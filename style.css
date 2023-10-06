@@ -1,0 +1,39 @@
+
+body {
+	background-color: #a0e0ff;
+}	
+
+h1 {
+  text-align: center;
+  font-family: 'Cherry Cream Soda', serif;
+  font-size: 48px;
+  font-style: normal;
+  font-weight: 700;
+  text-shadow: 3px 3px 3px #aaa;
+  text-decoration: none;
+  text-transform: capitalize;
+  letter-spacing: 0em;
+  word-spacing: 0em;
+  line-height: 1.2;
+}
+
+.sans {
+  font-family: sans-serif;
+  font-size: 16;
+  font-style: italic;
+}
+
+.grid-table {
+  font-family: sans-serif;
+}
+.grid-th {
+  font-size: 10pt;
+  font-family: sans-serif;
+  text-align: center;
+}
+.grid-td {
+  line-height: 5px;
+  font-size: 10pt;
+  font-family: sans-serif;
+  text-align: center;
+}

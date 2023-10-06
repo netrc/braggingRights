@@ -13,6 +13,9 @@ See http://netrc.github.io/braggingRights
 ## Notes
 
 * Using gridjs.io for chart
+* maps: https://github.com/markmarkoh/datamaps/blob/master/README.md#getting-started
+* https://realfavicongenerator.net
+* <a href="https://www.flaticon.com/free-icons/trophy" title="trophy icons">Trophy icons created by Freepik - Flaticon</a>
 
 Originally used sheets to store data. Experimented with airtable, other databases. Determined it was overkill. 
 And couldn't find simple online data store with this info. Having the data be in simple js files ends up being easiest.

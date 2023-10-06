@@ -1,17 +1,41 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>braggingRights</title>
+
+  <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.5.3/d3.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/topojson/1.6.9/topojson.min.js"></script>
+  <script src="http://datamaps.github.io/scripts/datamaps.usa.min.js?v=1"></script>
+
+  <link  href="http://fonts.googleapis.com/css?family=Cherry+Cream+Soda:regular&v1" rel="stylesheet" type="text/css" >
   <link href="https://unpkg.com/gridjs/dist/theme/mermaid.min.css" rel="stylesheet" />
+  <link href="style.css" rel="stylesheet" />
+
+  <link rel="apple-touch-icon" sizes="120x120" href="/icons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png">
+  <link rel="manifest" href="/icons/site.webmanifest">
+  <link rel="mask-icon" href="/icons/safari-pinned-tab.svg" color="#5bbad5">
+  <link rel="shortcut icon" href="/icons/favicon.ico">
+  <meta name="msapplication-TileColor" content="#da532c">
+  <meta name="msapplication-config" content="/icons/browserconfig.xml">
+  <meta name="theme-color" content="#ffffff">
 </head>
 <body>
 
 <h1> Bragging Rights </h1>
 
 <p class="sans">
-What North American city has won the most major sports championships?
+Which North American city has won the most major sports championships?
 </p>
 
-
 <div id="brGrid"></div>
+
+<br>
+<div id="map" style="position: relative; width: 80%; max-height: 450px;"></div>
 
 <script type='module'>
 
@@ -66,23 +90,28 @@ What North American city has won the most major sports championships?
   const brGrid = new Grid({
     columns:  [ 'City', 
                { name: 'Championships',
-                 columns: [ { name: 'wins', id: 'c-w' }, { name: 'losses', id: 'c-l' } ]
+                 columns: [ { name: 'W', id: 'c-w' }, { name: 'L', id: 'c-l' } ]
                 },
                { name: 'MLB',
-                 columns: [ { name: 'wins', id: 'm-w' }, { name: 'losses', id: 'm-l' } ]
+                 columns: [ { name: 'W', id: 'm-w' }, { name: 'L', id: 'm-l' } ]
                 },
                { name: 'NFL',
-                 columns: [ { name: 'wins', id: 'f-w'}, { name: 'losses', id: 'f-l' } ]
+                 columns: [ { name: 'W', id: 'f-w'}, { name: 'L', id: 'f-l' } ]
                 },
                { name: 'NBA',
-                 columns: [ { name: 'wins', id: 'b-w'}, { name: 'losses', id: 'b-l' } ]
+                 columns: [ { name: 'W', id: 'b-w'}, { name: 'L', id: 'b-l' } ]
                 },
                { name: 'NHL',
-                 columns: [ { name: 'wins', id: 'h-w'}, { name: 'losses', id: 'h-l' } ]
+                 columns: [ { name: 'W', id: 'h-w'}, { name: 'L', id: 'h-l' } ]
                 },
               ],
     sort: true,
-    data: mcArray
+    data: mcArray,
+    width: '80%',
+    className: {
+      th: 'grid-th',
+      td: 'grid-td'
+    }
   }).render(document.getElementById("brGrid"));
 
 
@@ -98,6 +127,19 @@ What North American city has won the most major sports championships?
   
   brGrid.on('cellClick', (...args) => cellPopup(args))
 
+  var map = new Datamap({
+    element: document.getElementById('map'),
+    scope: 'usa',
+    projection: 'mercator',
+    height: 500,
+    fills: {
+        defaultFill: '#60809a',
+        eq0: '#222',
+        lt10: '#955',
+        lt25: '#c66',
+        gt25: '#f00'
+    }
+  });
 
 </script>
 </body>
