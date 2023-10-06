@@ -258,6 +258,26 @@ const brNFL = [ {
   'winner': 'Philadelphia Eagles',
   'loser': 'New England Patriots',
   'score': '41-33'
+},{
+  'year': '2019',
+  'winner': 'Kansas City Chiefs',
+  'loser': 'San Francisco 49ers',
+  'score': '31-20'
+},{
+  'year': '2020',
+  'winner': 'Tampa Bay Buccaneers',
+  'loser': 'Kansas City Chiefs',
+  'score': '31-9'
+},{
+  'year': '2021',
+  'winner': 'Los Angeles Rams',
+  'loser': 'Cincinnati Bengals',
+  'score': '23-20'
+},{
+  'year': '2022',
+  'winner': 'Kansas City Chiefs',
+  'loser': 'Philadelphia Eagles',
+  'score': '38-35'
 } ]
 
 export default brNFL

@@ -430,7 +430,36 @@ const brNBA = [ {
   'loser': 'Cleveland Cavaliers',
   'wins': '4',
   'losses': '0'
-}
-]
+},{
+  'year': '2019',
+  'winner': 'Toronto Raptors',
+  'loser': 'Golden State Warriors',
+  'wins': '4',
+  'losses': '2'
+},{
+  'year': '2020',
+  'winner': 'Los Angeles Lakers',
+  'loser': 'Miami Heat',
+  'wins': '4',
+  'losses': '2'
+},{
+  'year': '2021',
+  'winner': 'Milwaukee Bucks',
+  'loser': 'Phoenix Suns',
+  'wins': '4',
+  'losses': '2'
+},{
+  'year': '2022',
+  'winner': 'Golden State Warriors',
+  'loser': 'Boston Celtics',
+  'wins': '4',
+  'losses': '2'
+},{
+  'year': '2023',
+  'winner': 'Denver Nuggets',
+  'loser': 'Miami Heat',
+  'wins': '4',
+  'losses': '1'
+} ]
 
 export default brNBA

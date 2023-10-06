@@ -544,7 +544,36 @@ const brNHL = [ {
   'loser': 'Vegas Golden Knights',
   'wins': '4',
   'losses': '1'
-}
-]
+},{
+  'year': '2019',
+  'winner': 'St. Louis Blues',
+  'loser': 'Boston Bruins',
+  'wins': '4',
+  'losses': '3'
+},{
+  'year': '2020',
+  'winner': 'Tampa Bay Lightning',
+  'loser': 'Dallas Stars',
+  'wins': '4',
+  'losses': '2'
+},{
+  'year': '2021',
+  'winner': 'Tampa Bay Lightning',
+  'loser': 'Montreal Canadiens',
+  'wins': '4',
+  'losses': '1'
+},{
+  'year': '2022',
+  'winner': 'Colorado Avalanche',
+  'loser': 'Tampa Bay Lightning',
+  'wins': '4',
+  'losses': '2'
+},{
+  'year': '2023',
+  'winner': 'Vegas Golden Knights',
+  'loser': 'Florida Panthers',
+  'wins': '4',
+  'losses': '1'
+} ]
 
 export default brNHL
