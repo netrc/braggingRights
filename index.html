@@ -41,51 +41,20 @@ Which North American city has won the most major sports championships?
 
   import { Grid, html } from "https://unpkg.com/gridjs?module";
 
-  import brCities from './data/brCities.js'
-  import brTeams from './data/brTeams.js'
-  import brMLB from './data/brMLB.js'
-  import brNFL from './data/brNFL.js'
-  import brNBA from './data/brNBA.js'
-  import brNHL from './data/brNHL.js'
+  import getCitiesWinsLosses from './braggingRights.js'
 
-  const updateCityItem = (o, c, ck, k ) => {
-    o[c] = (c in mc) ? o[c] : {} 
-    o[c][ck] = (ck in o[c]) ? o[c][ck]+1 : 1
-    o[c][k] = (k in o[c]) ? o[c][k]+1 : 1
-  }
-  const N = (a,c,k) => (k in a[c]) ? a[c][k] : 0
-  const cRow = (a,c) => ( [ c, N(a,c,'cWins'), N(a,c,'cLosses'), 
-                               N(a,c,'mlbWins'), N(a,c,'mlbLosses'),
-                               N(a,c,'nflWins'), N(a,c,'nflLosses'),
-                               N(a,c,'nbaWins'), N(a,c,'nbaLosses'),
-                               N(a,c,'nhlWins'), N(a,c,'nhlLosses')
-                          ])
-
-  // read through the sports data and add up wins/losses
-  const mc = {}
-  brMLB.forEach( y => {
-    updateCityItem( mc, brTeams[y.winner], 'cWins', 'mlbWins' )
-    updateCityItem( mc, brTeams[y.loser], 'cLosses', 'mlbLosses' )
-  })
-  brNFL.forEach( y => {
-    updateCityItem( mc, brTeams[y.winner], 'cWins', 'nflWins' )
-    updateCityItem( mc, brTeams[y.loser], 'cLosses', 'nflLosses' )
-  })
-  brNBA.forEach( y => {
-    updateCityItem( mc, brTeams[y.winner], 'cWins', 'nbaWins' )
-    updateCityItem( mc, brTeams[y.loser], 'cLosses', 'nbaLosses' )
-  })
-  brNHL.forEach( y => {
-    updateCityItem( mc, brTeams[y.winner], 'cWins', 'nhlWins' )
-    updateCityItem( mc, brTeams[y.loser], 'cLosses', 'nhlLosses' )
-  })
+  const mc = getCitiesWinsLosses()
   console.dir(mc)
 
-  // convert to array format (see cRow() func) for the grid
-  const sortedCities = Object.keys(mc).sort()
-  const mcArray = sortedCities.reduce( (a,c) => (a.push(cRow(mc,c)), a), [] )
+  const N = (a,c,k) => (k in a[c]) ? a[c][k] : 0 // just zero if missing data
+  // match the columns in the brGrid below
+  const colKeys = [ 'cWins', 'cLosses', 'mlbWins', 'mlbLosses', 'nflWins', 'nflLosses', 'nbaWins', 'nbaLosses', 'nhlWins', 'nhlLosses' ]
+  // pack all the city values into an array
+  const cRow = (a,c) => [ c ].concat( colKeys.map( k => N(a,c,k) ) )
+
+  // sort by city name and convert values into one big array for the grid data
+  const mcArray = Object.keys(mc).sort().map( c => cRow(mc,c) )
   console.dir(mcArray)
-  
 
   const brGrid = new Grid({
     columns:  [ 'City', 
